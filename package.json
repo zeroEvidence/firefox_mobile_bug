@@ -1,0 +1,11 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "sirv public --host 0.0.0.0"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "sirv-cli": "^1.0.0"
+  }
+}

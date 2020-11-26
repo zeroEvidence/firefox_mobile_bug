@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <title>Bug</title>
+  </head>
+
+  <body>
+    <input
+      type="text"
+      id="ccNumber"
+      pattern="\d*"
+      x-autocompletetype="cc-number"
+      name="ccNumber"
+    />
+    <input
+      type="text"
+      id="ccExpiry"
+      pattern="\d*"
+      x-autocompletetype="cc-exp"
+      name="ccExpiry"
+    />
+
+    <script type="text/javascript">
+      const addSpacesAt = new Set([4, 8, 12]);
+      const changeFocusAt = new Set([16]);
+      const ccNumberMaxLength = 16;
+      const ccExpiryInputElement = document.getElementById("ccExpiry");
+      const ccNumberInputElement = document.getElementById("ccNumber");
+      let selectionStart = 0;
+      let selectionEnd = 0;
+
+      const ccNumberInputHandler = (e) => {
+        const cardUnformattedNumber = e.currentTarget.value.replace(/\D/g, "");
+
+        e.currentTarget.value = "";
+        for (
+          let i = 0;
+          i < cardUnformattedNumber.length && i < ccNumberMaxLength;
+          i++
+        ) {
+          const num = cardUnformattedNumber[i];
+
+          if (addSpacesAt.has(i)) {
+            e.currentTarget.value += " ";
+          }
+
+          e.currentTarget.value += num;
+        }
+
+        selectionStart = e.currentTarget.selectionStart;
+        selectionEnd = e.currentTarget.selectionEnd;
+
+        console.log("inputHandler selectionStart:", selectionStart);
+        console.log("inputHandler selectionEnd:", selectionEnd);
+
+        if (changeFocusAt.has(cardUnformattedNumber.length)) {
+          ccExpiryInputElement.focus();
+        }
+
+        return;
+      };
+
+      const ccNumberKeydownHandler = (e) => {
+        console.log(e);
+
+        console.log(
+          "keydown selectionStart before:",
+          e.currentTarget.selectionStart
+        );
+        console.log(
+          "keydown selectionEnd before:",
+          e.currentTarget.selectionEnd
+        );
+
+        // comment out the next two lines to see the affect it has on mobile
+        // when you backspace.
+        e.currentTarget.selectionStart = selectionStart;
+        e.currentTarget.selectionEnd = selectionEnd;
+
+        console.log(
+          "keydown selectionStart after:",
+          e.currentTarget.selectionStart
+        );
+        console.log(
+          "keydown selectionEnd after:",
+          e.currentTarget.selectionEnd
+        );
+
+        return;
+      };
+
+      ccNumberInputElement.oninput = ccNumberInputHandler;
+      ccNumberInputElement.onkeydown = ccNumberKeydownHandler;
+    </script>
+  </body>
+</html>
